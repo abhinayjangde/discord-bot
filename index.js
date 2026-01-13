@@ -1,5 +1,6 @@
 import { Client, Events, GatewayIntentBits } from 'discord.js';
 import dotenv from 'dotenv';
+import http from 'http';
 
 dotenv.config();
 
@@ -32,3 +33,16 @@ client.on(Events.MessageCreate, async msg => {
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);
+
+// Minimal HTTP listener so Render (and other PaaS) detect an open port.
+// If you prefer a background worker on Render, you can remove this and
+// switch the service type to "Background Worker" in the Render dashboard.
+const PORT = process.env.PORT || 3000;
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('OK');
+});
+
+server.listen(PORT, () => {
+    console.log(`HTTP server listening on port ${PORT}`);
+});
